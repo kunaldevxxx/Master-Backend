@@ -6,7 +6,17 @@ class NewsAPITransform{
         id:news.id,
         heading:news.title,
         content:news.content,
-        image:getImageUrl(news.image)
+        image:getImageUrl(news.image),
+        created_at:news.created_at,
+        reporter:{
+            id:news?.user.id,
+            name:news?.user.name,
+            profile:news?.user?.profile != null
+              ? getImageUrl(news?.user?.profile)
+              : "https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png",
+        },
+
+        
         }
     }
 }

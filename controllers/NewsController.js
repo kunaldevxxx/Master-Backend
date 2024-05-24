@@ -8,7 +8,15 @@ import NewsAPITransform from "../transform/newsAPITransform.js";
 
 class NewsController {
     static async index(req, res) {
-        const news = await prisma.news.findMany({})
+        const news = await prisma.news.findMany({
+            include:{
+                user:{
+                    id:true,
+                    name:true,
+                    profile:true,
+                }
+            }
+        })
         const newsTransform = news?.map((item) => NewsAPITransform.transform(item));
 
         return res.json({status:200,news:newsTransform})
