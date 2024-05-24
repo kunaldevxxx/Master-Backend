@@ -12,7 +12,7 @@ class NewsController {
             console.log(newsSchema)
             const validator=vine.compile(newsSchema)
             const payload = await validator.validate(body)
-            return res.status(200)
+            return res.json({ payload });
         } catch (error) {
             if (error instanceof errors.E_VALIDATION_ERROR) {
                 return res.status(400).json({ errors: error.messages });
