@@ -7,6 +7,7 @@ import ApiRoutes from "./routes/api.js";
 const PORT = process.env.PORT || 8000
 // Middleware
 app.use(express.json());
+app.use(express.static("public"))
 app.use(express.urlencoded({extended:false}));
 app.use(fileUpload());
 app.get("/",(req,res)=>{
