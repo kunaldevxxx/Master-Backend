@@ -8,7 +8,20 @@ import NewsAPITransform from "../transform/newsAPITransform.js";
 
 class NewsController {
     static async index(req, res) {
+        const page=Number(req.query.page || 1)
+        const limit=Number(req.query.limit || 1)
+
+        if(page<=0){
+            page=1
+        }
+        if(limit<=0 || limit>100){
+            limit=10
+        }
+        const skip = (page-1)*limit 
+
         const news = await prisma.news.findMany({
+            take:limit,
+            skip:skip,
             include:{
                 user:{
                     id:true,
@@ -18,8 +31,14 @@ class NewsController {
             }
         })
         const newsTransform = news?.map((item) => NewsAPITransform.transform(item));
+        const totalNews=await prisma.news.count()
+        const totalPages=Math.ceil(totalNews/limit)
 
-        return res.json({status:200,news:newsTransform})
+        return res.json({status:200,news:newsTransform,metadata:{
+            totalPages,
+            currentPage:page,
+            currentLimit:limit,
+        }})
     }
     static async store(req, res) {
         try {
@@ -71,7 +90,31 @@ class NewsController {
             }
         }
     }
-    static async show(req, res) { }
+    static async show(req, res) { 
+        try{
+            const {id}=req.params
+            const news=await prisma.news.findUnique({
+                where:{
+                    id:Number(id)
+                },
+                include:{
+                    user:{
+                        select:{
+                            id:true,
+                            name:true,
+                            profile:true
+                        }
+                    }
+                }
+            })
+            const transformNews=news ? NewsAPITransform.transform(news) : null
+            return res.json({status:200,news:transformNews});
+        }
+        catch(error){
+            return res.status(500).json({message:"Something Went Wrong , pls try again !!!!"})
+        }
+      
+    }
     static async update(req, res) { }
     static async Destroy(req, res) { }
 }
