@@ -4,6 +4,7 @@ import { newsSchema } from "../Validations/newsValidation.js";
 import { imageValidator, removeImage,uploadImage } from "../utils/helper.js";
 import { generateRandomNum } from "../utils/helper.js";
 import NewsAPITransform from "../transform/newsAPITransform.js";
+import redisCache from "../DB/redis.config.js";
 
 
 class NewsController {
@@ -76,8 +77,10 @@ class NewsController {
             const news = await prisma.news.create({
              data: payload,
                 });
-             
-       
+            redisCache.del("/api/news",(err)=>{
+                if (err) throw err;
+                
+            })
 
             return res.json({status:200,message:"News Created Succesfully",news});
         }
