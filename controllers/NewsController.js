@@ -5,6 +5,7 @@ import { imageValidator, removeImage,uploadImage } from "../utils/helper.js";
 import { generateRandomNum } from "../utils/helper.js";
 import NewsAPITransform from "../transform/newsAPITransform.js";
 import redisCache from "../DB/redis.config.js";
+import { loggers } from "winston";
 
 
 class NewsController {
@@ -79,13 +80,14 @@ class NewsController {
                 });
             redisCache.del("/api/news",(err)=>{
                 if (err) throw err;
-                
+
             })
 
             return res.json({status:200,message:"News Created Succesfully",news});
         }
 
         catch (error) {
+            loggers.error(error?.message);
             if (error instanceof errors.E_VALIDATION_ERROR) {
                 return res.status(400).json({ errors: error.messages });
             } else {

@@ -6,6 +6,7 @@ import cors from 'cors';
 import fileUpload from "express-fileupload";
 const app = express()
 import ApiRoutes from "./routes/api.js";
+import logger from "./config/logger.js";
 
 const PORT = process.env.PORT || 8000
 // Middleware
@@ -20,4 +21,5 @@ app.get("/",(req,res)=>{
     return res.json({message:"hello"})
 });
 app.use("/api",ApiRoutes);
+
 app.listen(PORT,()=> console.log(`SERVER RUNNING On ${PORT}`));
