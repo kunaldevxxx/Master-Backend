@@ -16,5 +16,6 @@ router.post("/news",authMiddleWare,NewsController.store);
 router.get("/news/:id",NewsController.show);
 router.put("/news/:id",authMiddleWare,NewsController.update);
 router.delete("/news/:id",NewsController.destroy);
+router.get("/send-email",AuthController.sendTestEmail)
 
 export default router;

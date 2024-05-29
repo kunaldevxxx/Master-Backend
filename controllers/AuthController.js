@@ -3,6 +3,8 @@ import vine from "@vinejs/vine";
 import { errors } from "@vinejs/vine";
 import bcrypt from "bcryptjs";
 import  jwt  from "jsonwebtoken";
+import { sendEmail } from "../config/mailer.js";
+import logger from "../config/logger.js";
 import { messages } from "@vinejs/vine/defaults";
 import { LoginSchema, registerSchema } from "../Validations/AuthValidation.js";
 
@@ -91,7 +93,42 @@ class AuthController {
                 return res.status(500).json({ status: 500, message: "Something Went Wrong" });
             }
         }
+        
     }
+static async sendTestEmail(req, res) {
+        try {
+          const { email } = req.query;
+    
+          const payload = [
+            {
+              toEmail: email,
+              subject: "Hey I am just testing",
+              body: "<h1>Hello World , I am from Master backend series.</h1>",
+            },
+            {
+              toEmail: email,
+              subject: "You got an amazing",
+              body: "<h1>Hello Tushar you got this amazing offer.</h1>",
+            },
+            {
+              toEmail: email,
+              subject: "Kadake ki pad rahi hai thand",
+              body: "<h1>Please apne ghar par rahe .</h1>",
+            },
+          ];
+    
+          await emailQueue.add(emailQueueName, payload);
+    
+          // await sendEmail(payload.toEmail, payload.subject, payload.body);
+          // await sendEmail(payload.toEmail, "Second email", payload.body1);
+          return res.json({ status: 200, message: "Job added successfully" });
+        } catch (error) {
+          logger.error({ type: "Email Error", body: error });
+          return res
+            .status(500)
+            .json({ message: "Something went wrong.pls try agian later." });
+        }
+      }
 }
 
 export default AuthController;
