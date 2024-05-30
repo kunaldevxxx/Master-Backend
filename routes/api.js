@@ -18,4 +18,5 @@ router.put("/news/:id",authMiddleWare,NewsController.update);
 router.delete("/news/:id",NewsController.destroy);
 router.get("/send-email",AuthController.sendTestEmail)
 
+import "../jobs/index.js"
 export default router;
